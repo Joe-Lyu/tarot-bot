@@ -3,7 +3,7 @@ import discord
 import pickle
 from deck import *
 from draw import draw_spread
-from bot_interpretation import bot_interpret
+from utils import bot_interpret, split_msg
 TOKEN = pickle.load(open('token.pkl','rb')) #not gonna show my token to ya :)
 
 class TarotBot(discord.Client):
@@ -43,7 +43,12 @@ class TarotBot(discord.Client):
             ans = await self.wait_for('message',check=is_yes, timeout=600)
             if ans.content.lower() == 'yes':
                 await message.reply("Interpreting...")
-                return await message.reply(bot_interpret(question,spread,cards))
+                interpretation = bot_interpret(question,spread,cards)
+                print('generation successful.')
+                result = split_msg(interpretation,limit=1900)
+                for i in result:
+                    await message.reply(i)
+                return
             else:
                 return await message.reply("Exited session.")
         
