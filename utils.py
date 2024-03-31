@@ -6,25 +6,27 @@ def bot_interpret(question,spread,cards):
     prompt = f"I have requested a Tarot card reading. The question that I want answered is:\n{question}\nThe cards I have drawn are:\n{cards_format}\nWhat does this mean?"
     return query(prompt)
 
-def split_msg(msg, limit=2000):
+def split_msg(msg, limit=1800):
     if len(msg) <= limit:
         return [msg]
     else:
-        sentence_endings = re.compile(r'[.!?]+')
-        chunks = sentence_endings.split(msg)
-        result = []
-        current_chunk = ''
-        for i, chunk in enumerate(chunks):
-            if i != 0:
-                current_chunk += chunk
-            if len(current_chunk) > limit:
-                result.append(current_chunk[:limit-1] + '...')
-                current_chunk = current_chunk[limit-1:]
-        if current_chunk:
-            result.append(current_chunk)
-        for i in range(1,len(result)):
-            result[i] = '...' + result[i]
-        return result
+        breaks = []
+        win_start = 0
+        while win_start < len(msg) - limit:
+            for i in range(win_start+limit-1, win_start-1, -1):
+                if msg[i] in ['.','!','?']:
+                    breaks.append(i)
+                    win_start = i+1
+                    break
+        msgs = []
+        breaks = [-1] + breaks
+        for i in range(1,len(breaks)):
+            msgs.append(msg[breaks[i-1]+1:breaks[i]+1])
+        msgs.append(msg[win_start:])
+
+        for i in range(len(msgs)):
+            msgs[i] = msgs[i].lstrip(' ').rstrip(' ')
+        return msgs
 
 
 if __name__=='__main__':

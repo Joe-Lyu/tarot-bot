@@ -45,7 +45,7 @@ class TarotBot(discord.Client):
                 await message.reply("Interpreting...")
                 interpretation = bot_interpret(question,spread,cards)
                 print('generation successful.')
-                result = split_msg(interpretation,limit=1900)
+                result = split_msg(interpretation)
                 for i in result:
                     await message.reply(i)
                 return
