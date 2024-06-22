@@ -1,4 +1,10 @@
 # bot.py
+import os
+try:
+    import discord
+    import cohere
+except:
+    os.system('pip install discord cohere')
 import discord
 import pickle
 from deck import *
@@ -65,7 +71,7 @@ class TarotBot(discord.Client):
 
 
 intents = discord.Intents.default()
-intents.message_content = True
+intents.messages = True
 
 client = TarotBot(intents=intents)
 client.run(TOKEN)
